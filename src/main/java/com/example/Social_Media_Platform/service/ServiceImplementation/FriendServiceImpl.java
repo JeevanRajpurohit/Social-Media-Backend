@@ -7,6 +7,7 @@ import com.example.Social_Media_Platform.dtos.FriendRequestDto;
 import com.example.Social_Media_Platform.dtos.FriendResponseDto;
 import com.example.Social_Media_Platform.exception.FriendRequestException;
 import com.example.Social_Media_Platform.exception.UserNotFoundException;
+import com.example.Social_Media_Platform.model.Comment;
 import com.example.Social_Media_Platform.model.Friend;
 import com.example.Social_Media_Platform.model.FriendRequest;
 import com.example.Social_Media_Platform.model.User;
@@ -151,44 +152,10 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public PaginationResponse getFriends(String token, int limit, String lastEvaluatedKey) {
         User user = authService.getCurrentUser(token);
-        Map<String, AttributeValue> exclusiveStartKey = getExclusiveStartKey(lastEvaluatedKey);
-        QueryResultPage<Friend> scanResult = friendRepository.findFriendsByUserId(user.getId(), limit, exclusiveStartKey);
-
-        Set<String> friendIds = scanResult.getResults().stream()
-                .map(Friend::getFriendId)
-                .collect(Collectors.toSet());
-
-        Map<String, User> users = new HashMap<>();
-        for (String id : friendIds) {
-            User friend = userRepository.findById(id)
-                    .orElseThrow(() -> UserNotFoundException.withId(id));
-            users.put(id, friend);
-        }
-
-        List<FriendResponseDto> friends = scanResult.getResults().stream()
-                .map(friend -> mapToFriendResponseDto(friend, users))
-                .collect(Collectors.toList());
-
-        String nextKey = scanResult.getLastEvaluatedKey() != null ?
-                scanResult.getLastEvaluatedKey().get("id").getS() : null;
-
-        return new PaginationResponse(
-                friends,
-                nextKey,
-                limit,
-                scanResult.getLastEvaluatedKey() != null
-        );
-    }
-
-    private Map<String, AttributeValue> getExclusiveStartKey(String lastEvaluatedKey) {
-        if (lastEvaluatedKey == null || lastEvaluatedKey.isEmpty()) {
-            return null;
-        }
-
-        Map<String, AttributeValue> exclusiveStartKey = new HashMap<>();
-        exclusiveStartKey.put("id", new AttributeValue().withS(lastEvaluatedKey));
-
-        return exclusiveStartKey;
+        List<Friend>list=friendRepository.findFriendsByUserId(user.getId(),limit,lastEvaluatedKey);
+        boolean hasMore=!(list.size()<limit);
+        lastEvaluatedKey = hasMore ? list.get(list.size() - 1).getId() : null;
+        return new PaginationResponse(list,lastEvaluatedKey,limit,hasMore);
     }
 
 

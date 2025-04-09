@@ -34,33 +34,32 @@ public class FriendRepository {
         dynamoDBMapper.delete(friend);
     }
 
-    public QueryResultPage<Friend> findFriendsByUserId(String userId, int limit, Map<String, AttributeValue> lastEvaluatedKey) {
-        Friend friend = new Friend();
-        friend.setUserId(userId);
+    public List<Friend> findFriendsByUserId(String userId, int limit,String lastEvaluatedKey) {
+        Map<String , AttributeValue> exclusiveStartKey=new HashMap<>();
+
+        Map<String,AttributeValue> eav=new HashMap<>();
+        eav.put(":userId",new AttributeValue().withS(userId));
+//        Friend friend = new Friend();
+//        friend.setUserId(userId);
 
         DynamoDBQueryExpression<Friend> queryExpression = new DynamoDBQueryExpression<Friend>()
-                .withHashKeyValues(friend)
                 .withIndexName("userId-createdAt-index")
+                .withKeyConditionExpression("userId = :userId")
+                .withExpressionAttributeValues(eav)
                 .withConsistentRead(false)
                 .withLimit(limit)
-                .withExclusiveStartKey(lastEvaluatedKey)
                 .withScanIndexForward(false);
 
-        return dynamoDBMapper.queryPage(Friend.class, queryExpression);
+        if(lastEvaluatedKey!=null)
+        {
+            exclusiveStartKey.put("userId",new AttributeValue().withS(userId));
+            exclusiveStartKey.put("id",new AttributeValue().withS(lastEvaluatedKey));
+            queryExpression.setExclusiveStartKey(exclusiveStartKey);
+        }
+
+        return dynamoDBMapper.queryPage(Friend.class, queryExpression).getResults();
     }
 
-    public List<Friend> findAllFriendsByUserId(String userId) {
-        List<Friend> allFriends = new ArrayList<>();
-        Map<String, AttributeValue> lastEvaluatedKey = null;
-
-        do {
-            QueryResultPage<Friend> result = findFriendsByUserId(userId, 100, lastEvaluatedKey);
-            allFriends.addAll(result.getResults());
-            lastEvaluatedKey = result.getLastEvaluatedKey();
-        } while (lastEvaluatedKey != null);
-
-        return allFriends;
-    }
     public int countFriendsByUserId(String userId) {
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
                 .withFilterExpression("userId = :userId")

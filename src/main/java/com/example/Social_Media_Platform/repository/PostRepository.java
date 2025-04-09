@@ -2,6 +2,7 @@ package com.example.Social_Media_Platform.repository;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.example.Social_Media_Platform.model.Friend;
 import com.example.Social_Media_Platform.model.Post;
 import org.springframework.stereotype.Repository;
 
@@ -41,20 +42,28 @@ public class PostRepository {
         return dynamoDBMapper.count(Post.class, scanExpression);
     }
 
-    public QueryResultPage<Post> findByUserId(String userId, int limit, Map<String, AttributeValue> lastEvaluatedKey) {
-        Map<String, AttributeValue> eav = new HashMap<>();
-        eav.put(":userId", new AttributeValue().withS(userId));
+    public List<Post> findByUserId(String userId, int limit, String lastEvaluatedKey) {
+        Map<String , AttributeValue> exclusiveStartKey=new HashMap<>();
+
+        Map<String,AttributeValue> eav=new HashMap<>();
+        eav.put(":userId",new AttributeValue().withS(userId));
 
         DynamoDBQueryExpression<Post> queryExpression = new DynamoDBQueryExpression<Post>()
                 .withIndexName("userId-createdAt-index")
-                .withConsistentRead(false)
                 .withKeyConditionExpression("userId = :userId")
                 .withExpressionAttributeValues(eav)
+                .withConsistentRead(false)
                 .withLimit(limit)
-                .withExclusiveStartKey(lastEvaluatedKey)
                 .withScanIndexForward(false);
 
-        return dynamoDBMapper.queryPage(Post.class, queryExpression);
+        if(lastEvaluatedKey!=null)
+        {
+            exclusiveStartKey.put("userId",new AttributeValue().withS(userId));
+            exclusiveStartKey.put("id",new AttributeValue().withS(lastEvaluatedKey));
+            queryExpression.setExclusiveStartKey(exclusiveStartKey);
+        }
+
+        return dynamoDBMapper.queryPage(Post.class, queryExpression).getResults();
     }
 
 

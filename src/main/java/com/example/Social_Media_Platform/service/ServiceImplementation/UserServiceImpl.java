@@ -54,14 +54,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        // Get post count
-        QueryResultPage<Post> postResult = postRepository.findByUserId(userId, 1, null);
-        int postCount = postResult.getCount() != null ? postResult.getCount() :
+        List<Post> postResult = postRepository.findByUserId(userId, 1, null);
+        int postCount = postResult.isEmpty() ? 0 : postResult.size();
                 postRepository.countPostsByUserId(userId); // You'll need to implement this method
 
-        // Get friend count
-        QueryResultPage<Friend> friendResult = friendRepository.findFriendsByUserId(userId, 1, null);
-        int friendCount = friendResult.getCount() != null ? friendResult.getCount() :
+        List<Friend> friendResult = friendRepository.findFriendsByUserId(userId, 1, null);
+        int friendCount = friendResult.isEmpty() ? 0 : friendResult.size();
                 friendRepository.countFriendsByUserId(userId); // You'll need to implement this method
 
         UserProfileDto profileDto = modelMapper.map(user, UserProfileDto.class);

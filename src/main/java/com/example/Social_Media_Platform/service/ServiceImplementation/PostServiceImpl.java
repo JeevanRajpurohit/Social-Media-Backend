@@ -6,6 +6,7 @@ import com.example.Social_Media_Platform.Util.PaginationResponse;
 import com.example.Social_Media_Platform.dtos.PostDto;
 import com.example.Social_Media_Platform.exception.PostNotFoundException;
 import com.example.Social_Media_Platform.exception.UserNotFoundException;
+import com.example.Social_Media_Platform.model.Comment;
 import com.example.Social_Media_Platform.model.Friend;
 import com.example.Social_Media_Platform.model.Post;
 import com.example.Social_Media_Platform.model.User;
@@ -74,49 +75,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PaginationResponse getPostsByUserId(String userId, int limit, String lastEvaluatedKey) {
-        Map<String, AttributeValue> exclusiveStartKey = getExclusiveStartKey(lastEvaluatedKey);
-        QueryResultPage<Post> scanResult = postRepository.findByUserId(userId, limit, exclusiveStartKey);
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> UserNotFoundException.withId(userId));
-
-        List<PostDto> posts = scanResult.getResults().stream()
-                .map(post -> mapToPostDto(post, user))
-                .collect(Collectors.toList());
-
-        String nextKey = null;
-        if (scanResult.getLastEvaluatedKey() != null) {
-            if (scanResult.getLastEvaluatedKey().get("createdAt") != null) {
-                nextKey = scanResult.getLastEvaluatedKey().get("createdAt").getN();
-            } else if (scanResult.getLastEvaluatedKey().get("id") != null) {
-                nextKey = scanResult.getLastEvaluatedKey().get("id").getS();
-            }
-        }
-
-        return new PaginationResponse(
-                posts,
-                nextKey,
-                limit,
-                scanResult.getLastEvaluatedKey() != null
-        );
+        List<Post>list=postRepository.findByUserId(userId,limit,lastEvaluatedKey);
+        boolean hasMore=!(list.size()<limit);
+        lastEvaluatedKey = hasMore ? list.get(list.size() - 1).getId() : null;
+        return new PaginationResponse(list,lastEvaluatedKey,limit,hasMore);
     }
 
-    private Map<String, AttributeValue> getExclusiveStartKey(String lastEvaluatedKey) {
-        if (lastEvaluatedKey == null || lastEvaluatedKey.isEmpty()) {
-            return null;
-        }
 
-        Map<String, AttributeValue> exclusiveStartKey = new HashMap<>();
-
-        try {
-            Long timestamp = Long.parseLong(lastEvaluatedKey);
-            exclusiveStartKey.put("createdAt", new AttributeValue().withN(timestamp.toString()));
-        } catch (NumberFormatException e) {
-            exclusiveStartKey.put("id", new AttributeValue().withS(lastEvaluatedKey));
-        }
-
-        return exclusiveStartKey;
-    }
 
     @Override
     public List<PostDto> getNewsFeed(String token, int limit) {
@@ -186,8 +151,8 @@ public class PostServiceImpl implements PostService {
     }
 
     private List<String> getFriendIds(String userId) {
-        QueryResultPage<Friend> result = friendRepository.findFriendsByUserId(userId, 100, null);
-        return result.getResults().stream()
+        List<Friend> result = friendRepository.findFriendsByUserId(userId, 100, null);
+        return result.stream()
                 .map(Friend::getFriendId)
                 .collect(Collectors.toList());
     }

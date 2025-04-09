@@ -15,6 +15,7 @@ import java.util.Date;
 @DynamoDBTable(tableName = "Friends")
 public class Friend {
     @DynamoDBHashKey
+    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "userId-createdAt-index")
     private String id; // Combination of userId and friendId: "userId#friendId"
 
     @DynamoDBIndexHashKey(globalSecondaryIndexName = "userId-createdAt-index")
@@ -23,7 +24,7 @@ public class Friend {
     @DynamoDBAttribute
     private String friendId;
 
-    @DynamoDBIndexRangeKey(globalSecondaryIndexName = "userId-createdAt-index")
+
     @DynamoDBTypeConverted(converter = DateConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
