@@ -41,7 +41,6 @@ public class FriendServiceImpl implements FriendService {
         this.modelMapper = modelMapper;
     }
 
-    @Transactional
     @Override
     public FriendRequest sendFriendRequest(String token, String receiverId) {
         User sender = authService.getCurrentUser(token);
@@ -79,7 +78,6 @@ public class FriendServiceImpl implements FriendService {
         return friendRequestRepository.save(friendRequest);
     }
 
-    @Transactional
     @Override
     public FriendRequest respondToFriendRequest(String token, String requestId, String status) {
         User user = authService.getCurrentUser(token);
@@ -159,7 +157,6 @@ public class FriendServiceImpl implements FriendService {
     }
 
 
-    @Transactional
     @Override
     public void removeFriend(String token, String friendId) {
         User user = authService.getCurrentUser(token);

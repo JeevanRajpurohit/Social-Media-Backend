@@ -46,7 +46,6 @@ public class AuthServiceImpl implements AuthService {
         this.modelMapper = modelMapper;
     }
 
-    @Transactional
     @Override
     public User register(UserDto registerDto) {
         if (userRepository.findByEmail(registerDto.getEmail()).isPresent()) {
@@ -66,7 +65,6 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.save(user);
     }
 
-    @Transactional
     @Override
     public TokenDto login(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
@@ -92,7 +90,6 @@ public class AuthServiceImpl implements AuthService {
         return new TokenDto(accessToken, refreshToken);
     }
 
-    @Transactional
     @Override
     public TokenDto refreshToken(String refreshToken) {
         if (!jwtUtil.validateToken(refreshToken)) {

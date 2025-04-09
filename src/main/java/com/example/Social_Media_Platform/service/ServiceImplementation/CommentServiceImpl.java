@@ -41,7 +41,6 @@ public class CommentServiceImpl implements CommentService {
         this.modelMapper = modelMapper;
     }
 
-    @Transactional
     @Override
     public CommentDto createComment(String token, String postId, String content) {
         User user = authService.getCurrentUser(token);
@@ -70,7 +69,6 @@ public class CommentServiceImpl implements CommentService {
         return new PaginationResponse(list,lastEvaluatedKey,limit,hasMore);
     }
 
-    @Transactional
     @Override
     public void deleteComment(String token, String commentId) {
         User user = authService.getCurrentUser(token);

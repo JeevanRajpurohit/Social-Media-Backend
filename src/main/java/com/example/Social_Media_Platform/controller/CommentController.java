@@ -38,7 +38,7 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("comment.create.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -61,7 +61,6 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            /*messageUtil.getMessage("comment.list.error"),*/
                             e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
@@ -85,7 +84,7 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("comment.delete.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));

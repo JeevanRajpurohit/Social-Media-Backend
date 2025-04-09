@@ -41,7 +41,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("user.profile.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -62,7 +62,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("user.profile.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -84,7 +84,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("user.update.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -106,7 +106,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("user.avatar.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));

@@ -43,7 +43,7 @@ public class PostServiceImpl implements PostService {
         this.modelMapper = modelMapper;
     }
 
-    @Transactional
+
     public PostDto createPost(String token, String content, MultipartFile image) throws IOException {
         User user = authService.getCurrentUser(token);
 
@@ -108,7 +108,6 @@ public class PostServiceImpl implements PostService {
     }
 
 
-    @Transactional
     @Override
     public void deletePost(String token, String postId) {
         User user = authService.getCurrentUser(token);
@@ -122,7 +121,6 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
-    @Transactional
     @Override
     public PostDto likePost(String token, String postId) {
         User user = authService.getCurrentUser(token);
@@ -136,7 +134,6 @@ public class PostServiceImpl implements PostService {
         return mapToPostDto(post, postUser);
     }
 
-    @Transactional
     @Override
     public PostDto unlikePost(String token, String postId) {
         User user = authService.getCurrentUser(token);

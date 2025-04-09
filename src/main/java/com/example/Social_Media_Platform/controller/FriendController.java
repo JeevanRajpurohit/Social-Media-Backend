@@ -37,7 +37,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("friend.request.send.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -60,7 +60,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("friend.request.respond.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -85,7 +85,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("friend.request.list.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -108,7 +108,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("friend.list.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -131,7 +131,7 @@ public class FriendController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("friend.remove.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));

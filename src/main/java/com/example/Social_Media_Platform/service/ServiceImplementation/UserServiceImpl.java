@@ -49,27 +49,27 @@ public class UserServiceImpl implements UserService {
             return getUserProfile(user.getId());
         }
 
-    @Override
-    public UserProfileDto getUserProfile(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        @Override
+        public UserProfileDto getUserProfile(String userId) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        List<Post> postResult = postRepository.findByUserId(userId, 1, null);
-        int postCount = postResult.isEmpty() ? 0 : postResult.size();
-                postRepository.countPostsByUserId(userId); // You'll need to implement this method
+            List<Post> postResult = postRepository.findByUserId(userId, 1, null);
+            int postCount = postResult.isEmpty() ? 0 : postResult.size();
+                    postRepository.countPostsByUserId(userId);
 
-        List<Friend> friendResult = friendRepository.findFriendsByUserId(userId, 1, null);
-        int friendCount = friendResult.isEmpty() ? 0 : friendResult.size();
-                friendRepository.countFriendsByUserId(userId); // You'll need to implement this method
+            List<Friend> friendResult = friendRepository.findFriendsByUserId(userId, 1, null);
+            int friendCount = friendResult.isEmpty() ? 0 : friendResult.size();
+                    friendRepository.countFriendsByUserId(userId);
 
-        UserProfileDto profileDto = modelMapper.map(user, UserProfileDto.class);
-        profileDto.setFriendCount(friendCount);
-        profileDto.setPostCount(postCount);
+            UserProfileDto profileDto = modelMapper.map(user, UserProfileDto.class);
+            profileDto.setFriendCount(friendCount);
+            profileDto.setPostCount(postCount);
 
-        return profileDto;
-    }
+            return profileDto;
+        }
 
-        @Transactional
+
         @Override
         public User updateUserProfile(String token, UserDto updateDto) {
             User user = authService.getCurrentUser(token);
@@ -82,7 +82,6 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(user);
         }
 
-        @Transactional
         @Override
         public User updateUserAvatar(String token, MultipartFile file) throws IOException {
             User user = authService.getCurrentUser(token);

@@ -47,7 +47,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("post.create.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -68,7 +68,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("post.get.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -91,7 +91,6 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-//                            messageUtil.getMessage("post.list.error"),
                             e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
@@ -124,13 +123,6 @@ public class PostController {
         }
     }
 
-
-    private Map<String, AttributeValue> parseLastEvaluatedKey(String json) throws JsonProcessingException {
-        // Implement JSON to AttributeValue map conversion
-        // This will depend on your specific implementation
-        return new ObjectMapper().readValue(json, new TypeReference<Map<String, AttributeValue>>() {});
-    }
-
     @DeleteMapping("/{postId}")
     public ResponseEntity<ResponseHandler> deletePost(@RequestHeader("Authorization") String token,
                                                       @PathVariable String postId) {
@@ -147,7 +139,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("post.delete.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -169,7 +161,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("post.like.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -191,7 +183,7 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("post.unlike.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));

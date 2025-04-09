@@ -45,7 +45,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("user.register.error"),
+                            e.getMessage(),
                             HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             false,
                             "error"));
@@ -67,7 +67,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("user.login.error"),
+                            e.getMessage(),
                             HttpStatus.UNAUTHORIZED.value(),
                             false,
                             "error"));
@@ -90,7 +90,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ResponseHandler(
                             null,
-                            messageUtil.getMessage("token.refresh.error"),
+                            e.getMessage(),
                             HttpStatus.UNAUTHORIZED.value(),
                             false,
                             "error"));
